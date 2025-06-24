@@ -20,6 +20,8 @@ export const ImageBlock: React.FC<ImageBlockProps> = ({
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  console.log('🖼️ ImageBlock render - block.content:', block.content);
+
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -31,21 +33,28 @@ export const ImageBlock: React.FC<ImageBlockProps> = ({
 
     setIsUploading(true);
     setUploadError(null);
+    console.log('🖼️ Starting image upload for file:', file.name);
 
     try {
       const result = await ApiService.uploadImage(file);
-      onUpdate({
+      console.log('🖼️ Upload successful, result:', result);
+      
+      const newContent = {
         url: result.url,
         alt: file.name,
         width: block.content?.width,
         height: block.content?.height,
         caption: block.content?.caption,
-      });
+      };
+      
+      console.log('🖼️ Calling onUpdate with content:', newContent);
+      onUpdate(newContent);
     } catch (error) {
       setUploadError('Failed to upload image');
-      console.error('Upload error:', error);
+      console.error('🖼️ Upload error:', error);
     } finally {
       setIsUploading(false);
+      console.log('🖼️ Upload process finished');
     }
   };
 

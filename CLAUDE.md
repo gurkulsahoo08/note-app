@@ -38,6 +38,7 @@ Full-stack collaborative note-taking application with Django REST API backend an
 - Get blocks: `curl -H "Authorization: Token <token>" "http://localhost:8000/api/blocks/?note_id=<note_id>"`
 - Delete note (hard): `curl -X DELETE -H "Authorization: Token <token>" http://localhost:8000/api/notes/<note_id>/`
 - Delete block (hard): `curl -X DELETE -H "Authorization: Token <token>" http://localhost:8000/api/blocks/<block_id>/`
+- Test image upload: `curl -X POST -H "Authorization: Token <token>" http://localhost:8000/api/upload/image/` (returns "No image file provided" error if working)
 
 ## Development Environment
 
@@ -77,8 +78,9 @@ Full-stack collaborative note-taking application with Django REST API backend an
 
 ### API Endpoints
 - `backend/apps/notes/views.py`: NoteViewSet with collaboration features
-- `backend/apps/blocks/views.py`: BlockViewSet with content management
+- `backend/apps/blocks/views.py`: BlockViewSet with content management + upload_image function
 - `backend/apps/notes/urls.py` & `backend/apps/blocks/urls.py`: URL routing
+- **Image Upload**: `/api/upload/image/` endpoint in blocks app handles file uploads
 
 ### Frontend Components
 - `frontend/src/components/Editor/Editor.tsx`: Main editor with drag & drop
@@ -94,7 +96,7 @@ TextBlock: { text: string, formatting?: object }
 HeadingBlock: { text: string, level: 1-6 }
 CodeBlock: { code: string, language: string }
 LatexBlock: { formula: string, display?: boolean }
-ImageBlock: { url: string, alt: string, caption?: string }
+ImageBlock: { url: string, alt: string, caption?: string, width?: number, height?: number }
 TableBlock: { rows: string[][], headers: string[] }
 ListBlock: { items: string[], ordered: boolean }
 ```
@@ -116,6 +118,26 @@ ListBlock: { items: string[], ordered: boolean }
 - **Cause**: Error handling reverts entire block state
 - **Solution**: Only revert specific failed block, not entire blocks array
 
+### Image Upload Issues
+- **Symptom**: Image upload succeeds but image disappears immediately
+- **Root Cause**: BlockSerializer validation fails during PATCH requests because `validate_content()` method couldn't find `block_type` in request data
+- **Solution**: Fixed in `backend/apps/blocks/serializers.py` - now gets `block_type` from existing instance during updates
+- **File limits**: Max 10MB, supports JPEG/PNG/GIF/WebP formats
+- **Storage**: Files saved to `backend/media/images/` directory
+- **IMPORTANT**: For image block updates, the serializer must use `self.instance.block_type` not `self.initial_data.get('block_type')`
+
+### Date Formatting Issues
+- **Symptom**: Sidebar shows "invalid date" instead of proper relative dates
+- **Root Causes**: 
+  1. Incorrect date calculation logic in formatDate() function
+  2. API field mismatch between backend and frontend
+- **Solutions Applied**:
+  1. Fixed formatDate() logic: Use Math.floor() instead of Math.ceil(), remove Math.abs(), correct day mapping (0 days = Today, 1 day = Yesterday)
+  2. Updated Sidebar component to use `note.last_modified || note.updated_at` for compatibility
+  3. Added `last_modified?: string` field to Note interface
+- **IMPORTANT**: NoteListSerializer returns `last_modified` field, NoteSerializer returns `updated_at` - frontend must handle both
+- **Fixed Files**: `frontend/src/components/Sidebar/Sidebar.tsx`, `frontend/src/types/index.ts`
+
 ### Deletion Behavior (IMPORTANT - UPDATED)
 - **System uses HARD DELETION**: Notes/blocks are permanently removed from database
 - **Frontend delete works correctly**: Click delete → API call → hard delete → item completely removed
@@ -129,6 +151,8 @@ ListBlock: { items: string[], ordered: boolean }
 - Validate content schemas for different block types
 - Test hard deletion behavior (items completely removed)
 - Verify authentication token functionality
+- **IMPORTANT**: Test image block updates with PATCH requests to ensure serializer validation works correctly
+- **Test image upload flow**: Upload file → update block content → verify no 400 errors → confirm image persists
 
 ### Frontend Testing
 - Test block rendering with undefined content
@@ -166,6 +190,11 @@ ListBlock: { items: string[], ordered: boolean }
 - `DB_NAME`, `DB_USER`, `DB_PASSWORD`: Database configuration
 - `REACT_APP_API_URL`: Frontend API base URL
 - `REACT_APP_WS_URL`: WebSocket connection URL
+
+### File Storage
+- **Media files**: Stored in `backend/media/` directory
+- **Image uploads**: Saved to `backend/media/images/` with UUID-based filenames
+- **IMPORTANT**: Ensure `backend/media/images/` directory exists for uploads to work
 
 ### Security
 - Never commit authentication tokens
@@ -210,6 +239,16 @@ ss -tlnp | grep -E "(3000|8000)"  # Check if both servers are running
 ps aux | grep -E "(manage.py|react-scripts)"  # Check processes
 ```
 
+### Debug API Field Mismatches
+```bash
+# Check what fields the API actually returns for notes list
+TOKEN=$(curl -s -X POST -H "Content-Type: application/json" -d '{"username":"testuser","password":"testpass123"}' http://localhost:8000/api/auth/token/ | python3 -c "import sys, json; print(json.load(sys.stdin)['token'])" 2>/dev/null)
+curl -s -H "Authorization: Token $TOKEN" http://localhost:8000/api/notes/ | python3 -m json.tool
+
+# Check individual note details (uses different serializer)
+curl -s -H "Authorization: Token $TOKEN" http://localhost:8000/api/notes/<note_id>/ | python3 -m json.tool
+```
+
 ## IMPORTANT Development Rules
 
 1. **YOU MUST** always use optional chaining for `block.content` access
@@ -223,3 +262,8 @@ ps aux | grep -E "(manage.py|react-scripts)"  # Check processes
 9. **CRITICAL**: Deletion is HARD DELETE - items are permanently removed from database
 10. **VERIFY** delete functionality by checking API responses and database counts
 11. **USE** the start.sh script for development - it handles both servers and dependencies
+12. **RESTART SERVERS** after backend changes using `./start.sh restart` to pick up new code
+13. **CHECK MEDIA DIRECTORY** exists (`backend/media/images/`) for image uploads to work
+14. **IMPORTANT**: When debugging image upload issues, add console.log statements to track the full flow from upload → onUpdate → handleBlockUpdate → API response
+15. **CRITICAL**: In BlockSerializer, always check if updating existing instance vs creating new one - use `self.instance` to get current block data during PATCH operations
+16. **IMPORTANT**: When debugging "invalid date" or similar frontend issues, check API field consistency between list and detail serializers - use debug commands to verify actual API response structure

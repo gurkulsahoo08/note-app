@@ -44,16 +44,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return 'Invalid date';
+    }
+    
     const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 1) {
+    if (diffDays === 0) {
       return 'Today';
-    } else if (diffDays === 2) {
+    } else if (diffDays === 1) {
       return 'Yesterday';
-    } else if (diffDays <= 7) {
-      return `${diffDays - 1} days ago`;
+    } else if (diffDays > 1 && diffDays <= 7) {
+      return `${diffDays} days ago`;
     } else {
       return date.toLocaleDateString();
     }
@@ -142,7 +146,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </button>
               </div>
               <div className="note-meta">
-                <span className="note-date">{formatDate(note.updated_at)}</span>
+                <span className="note-date">{formatDate(note.last_modified || note.updated_at)}</span>
                 <span className="note-blocks">
                   {note.blocks_count} block{note.blocks_count !== 1 ? 's' : ''}
                 </span>

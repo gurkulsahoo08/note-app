@@ -100,6 +100,12 @@ export const Editor: React.FC<EditorProps> = ({ note, blocks, onBlocksChange }) 
   }, []);
 
   const handleBlockUpdate = async (blockId: string, content: any) => {
+    console.log('📝 handleBlockUpdate called for block:', blockId, 'with content:', content);
+    
+    // Store the previous content before updating
+    const previousContent = localBlocks.find(block => block.id === blockId)?.content;
+    console.log('📝 Previous content:', previousContent);
+    
     try {
       // Update locally first for immediate feedback
       setLocalBlocks(prev =>
@@ -107,20 +113,26 @@ export const Editor: React.FC<EditorProps> = ({ note, blocks, onBlocksChange }) 
           block.id === blockId ? { ...block, content } : block
         )
       );
+      console.log('📝 Local blocks updated');
 
       // Send to server
-      await ApiService.updateBlock(blockId, { content });
+      const result = await ApiService.updateBlock(blockId, { content });
+      console.log('📝 Server update successful:', result);
       
       // Send real-time update
       WebSocketService.sendBlockUpdate(blockId, content);
+      console.log('📝 WebSocket update sent');
     } catch (error) {
-      console.error('Error updating block:', error);
-      // Revert local change on error - but only revert the specific block
-      setLocalBlocks(prev =>
-        prev.map(block =>
-          block.id === blockId ? blocks.find(b => b.id === blockId) || block : block
-        )
-      );
+      console.error('📝 Error updating block:', error);
+      // Revert to the previous content, not the original blocks prop
+      if (previousContent) {
+        console.log('📝 Reverting to previous content:', previousContent);
+        setLocalBlocks(prev =>
+          prev.map(block =>
+            block.id === blockId ? { ...block, content: previousContent } : block
+          )
+        );
+      }
     }
   };
 

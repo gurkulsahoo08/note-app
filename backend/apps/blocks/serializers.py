@@ -40,7 +40,11 @@ class BlockSerializer(serializers.ModelSerializer):
         return value
     
     def validate_content(self, value):
-        block_type = self.initial_data.get('block_type', 'text')
+        # For updates, get block_type from the instance, for creates get from initial_data
+        if self.instance:
+            block_type = self.instance.block_type
+        else:
+            block_type = self.initial_data.get('block_type', 'text')
         
         if block_type == 'text':
             if not isinstance(value, dict) or 'text' not in value:

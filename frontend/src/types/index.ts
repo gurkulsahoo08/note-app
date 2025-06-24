@@ -13,6 +13,7 @@ export interface Note {
   title: string;
   created_at: string;
   updated_at: string;
+  last_modified?: string;
   owner: User;
   collaborators: User[];
   collaborators_count: number;

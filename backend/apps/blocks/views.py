@@ -1,9 +1,13 @@
 from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from django.db import transaction, models
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import uuid
+import os
 from .models import Block, BlockVersion
 from apps.notes.models import Note
 from .serializers import (
@@ -151,3 +155,50 @@ class BlockViewSet(viewsets.ModelViewSet):
         
         serializer = BlockSerializer(new_block, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def upload_image(request):
+    """Upload an image file and return the URL"""
+    if 'image' not in request.FILES:
+        return Response(
+            {'error': 'No image file provided'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    image_file = request.FILES['image']
+    
+    # Validate file type
+    allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+    if image_file.content_type not in allowed_types:
+        return Response(
+            {'error': 'Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed.'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # Validate file size (max 10MB)
+    if image_file.size > 10 * 1024 * 1024:
+        return Response(
+            {'error': 'File too large. Maximum size is 10MB.'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        # Generate unique filename
+        file_extension = os.path.splitext(image_file.name)[1]
+        unique_filename = f"images/{uuid.uuid4()}{file_extension}"
+        
+        # Save file
+        file_path = default_storage.save(unique_filename, ContentFile(image_file.read()))
+        
+        # Generate full URL
+        file_url = request.build_absolute_uri(default_storage.url(file_path))
+        
+        return Response({'url': file_url}, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response(
+            {'error': f'Failed to upload image: {str(e)}'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
