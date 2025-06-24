@@ -76,3 +76,16 @@ Not Found: /socket.io/
 [24/Jun/2025 04:52:27] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
 Not Found: /socket.io/
 [24/Jun/2025 04:53:27] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
+Not Found: /socket.io/
+[24/Jun/2025 04:54:27] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
+Not Found: /socket.io/
+[24/Jun/2025 04:55:27] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
+Not Found: /socket.io/
+[24/Jun/2025 04:56:27] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
+[24/Jun/2025 04:57:00] "POST /api/blocks/ HTTP/1.1" 201 441
+[24/Jun/2025 04:57:06] "POST /api/upload/image/ HTTP/1.1" 200 85
+[24/Jun/2025 04:57:06] "OPTIONS /api/blocks/67d5b64e-4184-4d49-aadf-c23dd246f06a/ HTTP/1.1" 200 0
+[24/Jun/2025 04:57:06] "GET /media/images/379cd70b-c389-4a18-bd01-a3eccfb2dac9.jpg HTTP/1.1" 200 120575
+[24/Jun/2025 04:57:06] "PATCH /api/blocks/67d5b64e-4184-4d49-aadf-c23dd246f06a/ HTTP/1.1" 200 927
+Not Found: /socket.io/
+[24/Jun/2025 04:57:27] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
