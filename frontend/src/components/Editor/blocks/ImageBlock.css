@@ -1,0 +1,235 @@
+.image-block-empty {
+  width: 100%;
+  margin: 8px 0;
+}
+
+.image-upload-area {
+  border: 2px dashed #ced4da;
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #f8f9fa;
+  transition: all 0.2s;
+}
+
+.image-upload-area:hover {
+  border-color: #007bff;
+  background-color: #e3f2fd;
+}
+
+.upload-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.upload-btn {
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-btn:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.upload-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.url-input-section {
+  width: 100%;
+  max-width: 400px;
+}
+
+.url-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.url-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.upload-error {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+}
+
+.image-block {
+  position: relative;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.block-image {
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  max-width: 100%;
+  height: auto;
+}
+
+.block-image:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.image-toolbar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.image-container:hover .image-toolbar {
+  opacity: 1;
+}
+
+.change-image-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #495057;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+}
+
+.change-image-btn:hover {
+  background-color: white;
+  transform: scale(1.1);
+}
+
+.caption-input {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid #ced4da;
+  outline: none;
+  font-size: 14px;
+  font-style: italic;
+  color: #6c757d;
+  background: transparent;
+  margin-top: 8px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+
+.caption-input:focus {
+  border-bottom-color: #007bff;
+}
+
+.caption-input::placeholder {
+  color: #adb5bd;
+}
+
+.image-caption {
+  text-align: center;
+  font-size: 14px;
+  font-style: italic;
+  color: #6c757d;
+  margin-top: 8px;
+  padding: 4px 0;
+}
+
+/* Resize handles (for future enhancement) */
+.image-container.resizable {
+  resize: both;
+  overflow: hidden;
+  border: 1px dashed transparent;
+}
+
+.image-container.resizable:hover {
+  border-color: #007bff;
+}
+
+/* Loading state */
+.image-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Error state */
+.image-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .image-upload-area {
+    padding: 30px 16px;
+  }
+  
+  .upload-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .url-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .image-toolbar {
+    top: 4px;
+    right: 4px;
+  }
+  
+  .change-image-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  
+  .caption-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}

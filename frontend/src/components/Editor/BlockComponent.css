@@ -1,0 +1,224 @@
+.block-component {
+  position: relative;
+  margin: 8px 0;
+  padding: 8px 0;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  outline: none;
+  group: block;
+}
+
+.block-component:hover {
+  background-color: #f8f9fa;
+}
+
+.block-component.selected {
+  background-color: #e3f2fd;
+  box-shadow: 0 0 0 2px #007bff;
+}
+
+.block-component.dragging {
+  z-index: 1000;
+  transform: rotate(2deg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.block-content-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px;
+}
+
+.block-drag-handle {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-size: 12px;
+  line-height: 1;
+  user-select: none;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.block-component:hover .block-drag-handle {
+  opacity: 1;
+}
+
+.block-drag-handle:active {
+  cursor: grabbing;
+}
+
+.block-toolbar-inline {
+  position: absolute;
+  top: -8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.block-component.selected .block-toolbar-inline,
+.block-component:hover .block-toolbar-inline {
+  opacity: 1;
+}
+
+.block-action-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  background-color: white;
+  color: #6c757d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  border: 1px solid #e9ecef;
+}
+
+.block-action-btn:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.block-action-btn.delete-btn:hover {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+
+.block-content {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px;
+}
+
+.block-type-selector {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 20;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.type-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.type-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+  transform: translateY(-1px);
+}
+
+.type-btn.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.type-btn.cancel-btn {
+  background-color: #6c757d;
+  color: white;
+  border-color: #6c757d;
+  font-size: 18px;
+  margin-left: auto;
+}
+
+.type-btn.cancel-btn:hover {
+  background-color: #5a6268;
+  border-color: #5a6268;
+}
+
+/* Focus styles */
+.block-component:focus-visible {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Empty block styles */
+.block-content:empty::before {
+  content: "Type '/' for commands...";
+  color: #6c757d;
+  font-style: italic;
+  pointer-events: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .block-content-wrapper {
+    gap: 6px;
+  }
+  
+  .block-drag-handle {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+  
+  .block-toolbar-inline {
+    top: -6px;
+    right: 6px;
+  }
+  
+  .block-action-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  
+  .block-type-selector {
+    flex-wrap: wrap;
+    padding: 12px;
+    gap: 8px;
+  }
+  
+  .type-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+}

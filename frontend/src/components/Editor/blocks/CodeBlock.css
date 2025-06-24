@@ -1,0 +1,293 @@
+.code-block {
+  position: relative;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.code-toolbar {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: white;
+  padding: 6px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.language-selector {
+  padding: 4px 8px;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  background: white;
+  font-size: 12px;
+  color: #495057;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.language-selector:focus {
+  border-color: #007bff;
+}
+
+.copy-btn,
+.copy-btn-inline {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+  color: #495057;
+}
+
+.copy-btn:hover,
+.copy-btn-inline:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+  transform: translateY(-1px);
+}
+
+.copy-btn-inline {
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.code-block:hover .copy-btn-inline {
+  opacity: 1;
+}
+
+.code-container {
+  background-color: #2d3748;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #4a5568;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #1a202c;
+  border-bottom: 1px solid #4a5568;
+}
+
+.language-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #e2e8f0;
+  background: #2d3748;
+  padding: 16px;
+  overflow: hidden;
+  min-height: 120px;
+  tab-size: 2;
+}
+
+.code-textarea::placeholder {
+  color: #a0aec0;
+  font-style: italic;
+}
+
+.code-display {
+  margin: 0;
+  padding: 16px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #e2e8f0;
+  background: #2d3748;
+  cursor: text;
+  min-height: 120px;
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+.code-display:hover {
+  background-color: #374151;
+}
+
+.code-display code {
+  font-family: inherit;
+  color: inherit;
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.code-placeholder {
+  color: #a0aec0;
+  font-style: italic;
+}
+
+/* Line numbers (optional enhancement) */
+.code-display.line-numbers {
+  padding-left: 50px;
+  position: relative;
+}
+
+.code-display.line-numbers::before {
+  content: counter(line-number);
+  counter-increment: line-number;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 40px;
+  padding: 16px 8px;
+  background: #1a202c;
+  border-right: 1px solid #4a5568;
+  color: #718096;
+  font-size: 12px;
+  text-align: right;
+  line-height: 1.5;
+}
+
+/* Syntax highlighting overrides for dark theme */
+.code-display .token.comment,
+.code-display .token.prolog,
+.code-display .token.doctype,
+.code-display .token.cdata {
+  color: #718096;
+}
+
+.code-display .token.punctuation {
+  color: #e2e8f0;
+}
+
+.code-display .token.property,
+.code-display .token.tag,
+.code-display .token.boolean,
+.code-display .token.number,
+.code-display .token.constant,
+.code-display .token.symbol,
+.code-display .token.deleted {
+  color: #f56565;
+}
+
+.code-display .token.selector,
+.code-display .token.attr-name,
+.code-display .token.string,
+.code-display .token.char,
+.code-display .token.builtin,
+.code-display .token.inserted {
+  color: #48bb78;
+}
+
+.code-display .token.operator,
+.code-display .token.entity,
+.code-display .token.url,
+.code-display .language-css .token.string,
+.code-display .style .token.string {
+  color: #ed8936;
+}
+
+.code-display .token.atrule,
+.code-display .token.attr-value,
+.code-display .token.keyword {
+  color: #4299e1;
+}
+
+.code-display .token.function,
+.code-display .token.class-name {
+  color: #9f7aea;
+}
+
+.code-display .token.regex,
+.code-display .token.important,
+.code-display .token.variable {
+  color: #ed64a6;
+}
+
+/* Focus states */
+.code-textarea:focus {
+  outline: 2px solid #007bff;
+  outline-offset: -2px;
+}
+
+/* Scrollbar styling for code blocks */
+.code-display::-webkit-scrollbar {
+  height: 8px;
+}
+
+.code-display::-webkit-scrollbar-track {
+  background: #1a202c;
+}
+
+.code-display::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 4px;
+}
+
+.code-display::-webkit-scrollbar-thumb:hover {
+  background: #718096;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .code-toolbar {
+    top: -45px;
+    padding: 8px;
+    gap: 12px;
+  }
+  
+  .language-selector {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+  
+  .copy-btn,
+  .copy-btn-inline {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  
+  .code-textarea,
+  .code-display {
+    font-size: 13px;
+    padding: 12px;
+  }
+  
+  .code-header {
+    padding: 10px 12px;
+  }
+  
+  .language-badge {
+    font-size: 11px;
+  }
+}

@@ -1,0 +1,300 @@
+.list-block {
+  position: relative;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.list-toolbar {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  display: flex;
+  gap: 8px;
+  background: white;
+  padding: 6px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.list-type-btn,
+.add-item-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+  color: #495057;
+}
+
+.list-type-btn:hover,
+.add-item-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+  transform: translateY(-1px);
+}
+
+.list-type-btn.ordered {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.list-container {
+  padding: 8px 0;
+}
+
+.block-list {
+  margin: 0;
+  padding-left: 0;
+}
+
+.ordered-list {
+  list-style: none;
+  counter-reset: item;
+}
+
+.ordered-list .list-item {
+  counter-increment: item;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.ordered-list .list-item::before {
+  content: counter(item) ".";
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 600;
+  color: #007bff;
+  width: 20px;
+  text-align: right;
+}
+
+.unordered-list {
+  list-style: none;
+}
+
+.unordered-list .list-item {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.unordered-list .list-item::before {
+  content: "•";
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+  color: #007bff;
+  font-size: 16px;
+}
+
+.list-item {
+  position: relative;
+  padding-left: 40px;
+}
+
+.item-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+}
+
+.item-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 6px 8px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #2c3e50;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.item-input:focus {
+  background-color: #e3f2fd;
+  outline: 2px solid #007bff;
+  outline-offset: 1px;
+}
+
+.item-input::placeholder {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.item-text {
+  flex: 1;
+  padding: 6px 8px;
+  cursor: text;
+  border-radius: 4px;
+  line-height: 1.5;
+  color: #2c3e50;
+  transition: background-color 0.2s;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.item-text:hover {
+  background-color: #f8f9fa;
+}
+
+.item-placeholder {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.item-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.list-item:hover .item-actions {
+  opacity: 1;
+}
+
+.move-btn,
+.remove-item-btn {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.move-btn:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.remove-item-btn:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Nested lists support */
+.list-item .list-block {
+  margin-left: 20px;
+  margin-top: 8px;
+}
+
+/* Different bullet styles for nested lists */
+.unordered-list .list-item .unordered-list .list-item::before {
+  content: "◦";
+  font-size: 14px;
+}
+
+.unordered-list .list-item .unordered-list .list-item .unordered-list .list-item::before {
+  content: "▪";
+  font-size: 12px;
+}
+
+/* Focus states */
+.item-text:focus-visible {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Empty list state */
+.list-block:empty::before {
+  content: "Click to create a list";
+  display: block;
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  border: 2px dashed #ced4da;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+/* Drag and drop indicators */
+.list-item.dragging {
+  opacity: 0.5;
+}
+
+.list-item.drag-over {
+  border-top: 2px solid #007bff;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .list-toolbar {
+    top: -45px;
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .list-type-btn,
+  .add-item-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  
+  .list-item {
+    padding-left: 35px;
+  }
+  
+  .ordered-list .list-item::before {
+    left: -25px;
+    width: 15px;
+  }
+  
+  .unordered-list .list-item::before {
+    left: -18px;
+  }
+  
+  .item-input,
+  .item-text {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 8px;
+  }
+  
+  .move-btn,
+  .remove-item-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+  
+  .item-actions {
+    opacity: 1; /* Always show on mobile */
+  }
+}
