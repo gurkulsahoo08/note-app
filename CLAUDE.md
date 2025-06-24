@@ -42,6 +42,14 @@ Full-stack collaborative note-taking application with Django REST API backend an
 
 ## Development Environment
 
+### Database Setup
+- **Primary Database**: PostgreSQL (`note_taking_db`)
+- **Default Credentials**: postgres/postgres on localhost:5432
+- **CRITICAL**: Project will NOT run without PostgreSQL installed and configured
+- **Alternative**: Switch to SQLite in `backend/config/settings.py` for easier setup
+- **Data Location**: Notes stored in PostgreSQL database, NOT in git repository
+- **New Computer Setup**: Must install PostgreSQL OR configure SQLite before running
+
 ### Test User Credentials
 - **Username**: `testuser`
 - **Password**: `testpass123`
@@ -51,6 +59,7 @@ Full-stack collaborative note-taking application with Django REST API backend an
 - Django backend: `http://localhost:8000`
 - React frontend: `http://localhost:3000`
 - WebSocket: `ws://localhost:8000/ws/notes/{noteId}/`
+- PostgreSQL: `localhost:5432`
 
 ## Code Style & Guidelines
 
@@ -186,6 +195,50 @@ ListBlock: { items: string[], ordered: boolean }
 
 ## Deployment Considerations
 
+### New Computer Setup (IMPORTANT)
+**Project will FAIL to start without database setup!**
+
+**Option 1: Install PostgreSQL**
+```bash
+# Ubuntu/Debian
+sudo apt install postgresql postgresql-contrib
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Create database and user
+sudo -u postgres createdb note_taking_db
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+
+# Then run migrations
+cd backend && python manage.py migrate
+```
+
+**Option 2: Switch to SQLite (Easier)**
+Edit `backend/config/settings.py`:
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+```
+
+**Option 3: Docker Setup**
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: note_taking_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+```
+
 ### Environment Variables
 - `DB_NAME`, `DB_USER`, `DB_PASSWORD`: Database configuration
 - `REACT_APP_API_URL`: Frontend API base URL
@@ -195,14 +248,28 @@ ListBlock: { items: string[], ordered: boolean }
 - **Media files**: Stored in `backend/media/` directory
 - **Image uploads**: Saved to `backend/media/images/` with UUID-based filenames
 - **IMPORTANT**: Ensure `backend/media/images/` directory exists for uploads to work
+- **Git Exclusion**: Media files and database data are NOT committed to git
 
 ### Security
 - Never commit authentication tokens
 - Use environment variables for sensitive data
 - Validate user permissions on all API endpoints
 - Sanitize content to prevent XSS attacks
+- **User data stays local**: Notes/content not shared via git
 
 ## Troubleshooting Commands
+
+### Check Database Connection
+```bash
+# Test PostgreSQL connection
+sudo -u postgres psql note_taking_db -c "\l"
+
+# Check if database exists
+sudo -u postgres psql -c "SELECT datname FROM pg_database WHERE datname = 'note_taking_db';"
+
+# Check Django database connection
+cd backend && python manage.py dbshell
+```
 
 ### Check Database State
 ```bash
@@ -224,6 +291,13 @@ print('User notes:', Note.objects.filter(owner=user).count())
 print('Total blocks:', Block.objects.count())
 print('User blocks:', Block.objects.filter(note__owner=user).count())
 "
+
+# View actual note content
+sudo -u postgres psql note_taking_db -c "
+SELECT n.title, b.block_type, b.content, b.order 
+FROM notes_note n 
+JOIN blocks_block b ON n.id = b.note_id 
+ORDER BY n.title, b.order;"
 ```
 
 ### Test API Authentication
@@ -267,3 +341,4 @@ curl -s -H "Authorization: Token $TOKEN" http://localhost:8000/api/notes/<note_i
 14. **IMPORTANT**: When debugging image upload issues, add console.log statements to track the full flow from upload → onUpdate → handleBlockUpdate → API response
 15. **CRITICAL**: In BlockSerializer, always check if updating existing instance vs creating new one - use `self.instance` to get current block data during PATCH operations
 16. **IMPORTANT**: When debugging "invalid date" or similar frontend issues, check API field consistency between list and detail serializers - use debug commands to verify actual API response structure
+17. **CRITICAL**: Before sharing project or setting up on new computer, ensure database setup is documented and tested - project will not run without PostgreSQL configured
