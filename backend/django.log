@@ -16,3 +16,9 @@ Not Found: /socket.io/
 [24/Jun/2025 04:22:25] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
 Not Found: /socket.io/
 [24/Jun/2025 04:23:25] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
+Not Found: /socket.io/
+[24/Jun/2025 04:24:25] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
+Not Found: /socket.io/
+[24/Jun/2025 04:25:25] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
+Not Found: /socket.io/
+[24/Jun/2025 04:26:25] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 404 3330
